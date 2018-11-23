@@ -3,8 +3,9 @@ import { NgForm } from "@angular/forms";
 import { Product } from "../model/product.model";
 import { Model } from "../model/repository.model";
 import { MODES, SharedState, SHARED_STATE } from "./sharedState.model";
-import { Observable } from "rxjs";
+import { Observable, from } from "rxjs";
 import { filter, map, distinctUntilChanged, skipWhile } from "rxjs/operators";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "paForm",
@@ -17,21 +18,26 @@ export class FormComponent {
   editing: boolean = false;
 
   constructor(
-    private model: Model,
-    @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>
+    public model: Model,
+    activeRoute: ActivatedRoute,
+    private router: Router
   ) {
-    stateEvents
-      // .pipe(filter(state => state.id != 3))
-      // .pipe(map(state => new SharedState(state.mode, state.id == 5 ? 1 : state.id)))
-      // .pipe(distinctUntilChanged())
-    //   .pipe(skipWhile(state => this.editing))
-      .subscribe(update => {
-        this.product = new Product();
-        if (update.id) {
-          Object.assign(this.product, this.model.getProduct(update.id));
-        }
-        this.editing = update.mode == MODES.EDIT;
-      });
+    this.editing = activeRoute.snapshot.params["mode"] == "edit";
+    let id = activeRoute.snapshot.params["id"];
+    if (id != null) {
+      // let name = activeRoute.snapshot.params["name"];
+      // let category = activeRoute.snapshot.params["category"];
+      // let price = activeRoute.snapshot.params["price"];
+      // if (name != null && category != null && price != null) {
+      //   this.product.id = id;
+      //   this.product.name = name;
+      //   this.product.category = category;
+      //   this.product.price = price;
+      // } else {
+      //   Object.assign(this.product, this.model.getProduct(id));
+      // }
+      Object.assign(this.product, this.model.getProduct(id));
+    }
   }
 
   submitForm(form: NgForm) {
@@ -40,6 +46,7 @@ export class FormComponent {
       this.product = new Product();
       form.reset();
       this.editing = false;
+      this.router.navigateByUrl("/");
     }
   }
 

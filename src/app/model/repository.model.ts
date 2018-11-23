@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Product } from "./product.model";
 import { StaticDataSource } from "./static.datasource";
 import { RestDataSource } from "./rest.datasource";
+import { RequestMethod } from "@angular/http";
 
 @Injectable()
 export class Model {
@@ -44,5 +45,25 @@ export class Model {
         }
       }
     });
+  }
+  /**
+   * To verify a navigation within the same component
+   */
+  getNextProductId(id: number): number {
+    let index = this.products.findIndex(p => this.locator(p, id));
+    if (index > -1) {
+      return this.products[this.products.length > index + 1 ? index + 1 : 0].id;
+    } else {
+      return id || 0;
+    }
+  }
+
+  getPreviousProductId(id: number): number {
+    let index = this.products.findIndex(p => this.locator(p, id));
+    if (index > -1) {
+      return this.products[index > 0 ? index - 1 : this.products.length - 1].id;
+    } else {
+      return id || 0;
+    }
   }
 }
