@@ -3,6 +3,7 @@ import { Product } from "../model/product.model";
 import { Model } from "../model/repository.model";
 import { MODES, SharedState, SHARED_STATE } from "./sharedState.model";
 import { Observer } from "rxjs";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
     selector: "paTable",
@@ -10,18 +11,25 @@ import { Observer } from "rxjs";
     templateUrl: "table.component.html"
 })
 export class TableComponent {
-
-    constructor(private model: Model,
-        @Inject(SHARED_STATE) private observer: Observer<SharedState>
-    ) {
+    category: string;
+    constructor(private model: Model, activeRoute: ActivatedRoute) {
+        activeRoute.params.subscribe(params => {
+            this.category = params["category"] || null;
+        });
     }
 
     getProduct(key: number): Product {
         return this.model.getProduct(key);
     }
 
+    get categories(): string[] {
+        return this.model.getProducts().map(p=>p.category).filter((category,index,array) => {
+            return array.indexOf(category) == index;
+        });
+    }
+
     getProducts(): Product[] {
-        return this.model.getProducts();
+        return this.model.getProducts().filter(p => this.category == null ? true : p.category == this.category);
     }
 
     deleteProduct(key: number) {
