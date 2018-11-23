@@ -37,10 +37,10 @@ export class TableComponent {
     }
 
     editProduct(key: number) {
-        this.observer.next(new SharedState(MODES.EDIT, key));
+        // this.observer.next(new SharedState(MODES.EDIT, key));
     }
 
     createProduct() {
-        this.observer.next(new SharedState(MODES.CREATE));
+        // this.observer.next(new SharedState(MODES.CREATE));
     }
 }

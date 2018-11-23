@@ -1,20 +1,19 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Optional, inject, Inject, Injector } from "@angular/core";
 import { Product } from "./product.model";
-import { StaticDataSource } from "./static.datasource";
 import { RestDataSource } from "./rest.datasource";
-import { RequestMethod } from "@angular/http";
 
 @Injectable()
 export class Model {
   private products: Product[] = new Array<Product>();
   private locator = (p: Product, id: number) => p.id == id;
 
-  constructor(private dataSource: RestDataSource) {
-    this.dataSource.getData().subscribe(update => (this.products = update));
-  }
+  constructor(private dataSource: RestDataSource, private injector: Injector) {}
 
   getProducts(): Product[] {
     return this.products;
+  }
+  setProducts(update: Product[]): void {
+    this.products = update;
   }
 
   getProduct(id: number): Product {

@@ -4,6 +4,7 @@ import { Http, RequestMethod, Request, Headers } from "@angular/http";
 import { Observable } from "rxjs";
 import { Product } from "./product.model";
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/delay";
 
 export const REST_URL = new InjectionToken("rest_url");
 
@@ -12,7 +13,7 @@ export class RestDataSource {
   constructor(private http: Http, @Inject(REST_URL) private url: string) { }
 
   getData(): Observable<Product[]> {
-    return this.http.get(this.url).map(response => response.json());
+    return this.http.get(this.url).delay(2000).map(response => response.json());
   }
 
   deleteProduct(id: number): Observable<Product> {
